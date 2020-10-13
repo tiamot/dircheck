@@ -9,14 +9,15 @@
 ?>
 <?php
 ////////////////////////////////////////////////////////////////////////////////
-  // Default Timezone Set
+  // Default Timezone Set //////////////////////////////////////////////////////
   date_default_timezone_set('America/Los_Angeles');
-  // Variables
-  $previousFile = "dircheck_";
-  $previousFile .= return_page_slug();
-  $previousFile .= ".txt";
-  $directory2scan = '/files';
-  // Function for Directory Scan
+
+  // Variables /////////////////////////////////////////////////////////////////
+  $slug = return_page_slug(); // e.g. dircheck/alex means slug is alex
+  $previousFile = "dircheck_{$slug}.txt";
+  $directory2scan = '/files'; // starting point for directory check
+
+  // Function for Directory Scan ///////////////////////////////////////////////
   function directoryScan($dir) {
     if (isset($dir) && is_readable($dir)) {
       $dlist = Array();
@@ -71,7 +72,7 @@
     $intersect_array = array_intersect($array_a, $array_b);
     return array_diff($union_array, $intersect_array);
   }
-////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   // Read previous file list into an array
   // If it doesn't exist, create an empty array
@@ -95,6 +96,7 @@
   
   // Save current list of files for next time
   file_put_contents($previousFile, implode("\n",$currentFiles));
+////////////////////////////////////////////////////////////////////////////////
 ?>
 <!DOCTYPE html>
 <html>

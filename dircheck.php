@@ -28,7 +28,7 @@
    */
   function directoryScan($dir) {
     if (isset($dir) && is_readable($dir)) {
-      $html_file_rows = Array();
+      $table_data = Array();
       $dir = realpath($dir);
       $prefix_length = strlen($dir) + 1;
       $files = new RecursiveIteratorIterator(
@@ -43,51 +43,37 @@
         $file_part = substr($file, $prefix_length);
         $file_time = date ("n/j/Y g:i:s A", filemtime($file));
         //$file_time = date ("m/d/Y H:i:s", filemtime($file)); //leading zeros 24 hour format file modified
-        $html_file_rows[] = "<td>{$file_part}</td><td>{$file_time}</td>";
+        $table_data[] = "<td>{$file_part}</td><td>{$file_time}</td>";
       }
-      return $html_file_rows;
+      return $table_data;
     }
   }
 
-  // Function to Display Files from an array
-  function displayFiles(array $files, $type = "current") {
-    $messages = array( "current" => "files"
-                     , "deleted" => "deleted files"
-                     , "added"   => "new files" );
-    $message  = $messages[$type];
-    if (count($files)) {
-      foreach ($files as $file) {
-      	switch ($type) {
-          case "current":
-            echo '<tr>' . $file . "</tr>\n";
-            break;
-          case "deleted":
-            echo '<tr>' . $file . "</tr>\n";
-            break;
-          case "added":
-            echo '<tr>' . $file . "</tr>\n";
-            break;
-        }
-      }
-    } else {
-      switch ($type) {
-        case "current":
-          echo "";
-          break;
-        case "deleted":
-          echo "";
-          break;
-        case "added":
-          echo "";
-          break;
-      }
+  /**
+   * Given an array containing a list of html table data. Place the table data
+   * cells into html table rows, and echo the rows out with new lines.
+   *
+   * @param array $files An array containing html formatted table data cells.
+   */
+  function displayFiles(array $files) {
+    foreach ($files as $file) {
+      echo "<tr>{$file}</tr>\n";
     }
   }
-  // Function to Find Differences in File Lists
+
+  /**
+   * Given two arrays return all elements that are not shared between them.
+   *
+   * @param array $array_a one of two arrays used for comparison.
+   * @param array $array_b one of two arrays used for comparison.
+   *
+   * @return Array A list of all elements that are not shared.
+   */
   function array_xor($array_a, $array_b) {
-    $union_array = array_merge($array_a, $array_b);
-    $intersect_array = array_intersect($array_a, $array_b);
-    return array_diff($union_array, $intersect_array);
+    $union_array = array_merge($array_a, $array_b); // all elements
+    $intersect_array = array_intersect($array_a, $array_b); // shared elements
+    $xor_array = array_diff($union_array, $intersect_array); // non shared
+    return $xor_array;
   }
   //////////////////////////////////////////////////////////////////////////////
 
@@ -136,17 +122,17 @@
 		<tr>
 			<th colspan="2">Deleted Files:</th>
 		</tr>
-                <?php displayFiles($deletedFiles, "deleted"); ?>
+                <?php displayFiles($deletedFiles); ?>
 		<tr>
 			<th colspan="2">Added Files:</th>
 		</tr>
-		<?php displayFiles($addedFiles, "added"); ?>
+		<?php displayFiles($addedFiles); ?>
 		<tr>
 			<th colspan="2">Last Check: <?php echo $previousCheck; ?></th>
 		</tr>
 		<?php displayFiles($previousFiles); ?>
 		<tr>
-			<th colspan="2">Current Check: <?php echo date("n/j/Y g:i:s A"); ?></th>
+			<th colspan="2">Current Check: <?php echo date("m/d/Y H:i:s"); ?></th>
 		</tr>
 		<?php displayFiles($currentFiles); ?>
 	</table>

@@ -28,18 +28,27 @@
    */
   function directoryScan($dir) {
     if (isset($dir) && is_readable($dir)) {
-      $dlist = Array();
+      $html_file_rows = Array();
       $dir = realpath($dir);
-      $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator( $dir
-                                                                             , RecursiveDirectoryIterator::SKIP_DOTS)
-                                              , RecursiveIteratorIterator::LEAVES_ONLY
-                                              , RecursiveIteratorIterator::CATCH_GET_CHILD);
-      foreach($objects as $entry => $object){	
-        $dlist[] = '<td>' . substr( $entry, 7 ) . '</td><td>' . date ("n/j/Y g:i:s A", filemtime($entry)) . '</td>';
+      $prefix_length = strlen($dir) + 1;
+      $files = new RecursiveIteratorIterator(
+                   new RecursiveDirectoryIterator(
+                     $dir,
+                     RecursiveDirectoryIterator::SKIP_DOTS // skip . & ..
+                   ),
+                   RecursiveIteratorIterator::LEAVES_ONLY,
+                   RecursiveIteratorIterator::CATCH_GET_CHILD // ignore get err
+      );
+      foreach($files as $file){
+        $file_part = substr($file, $prefix_length);
+        $file_time = date ("n/j/Y g:i:s A", filemtime($file));
+        //$file_time = date ("m/d/Y H:i:s", filemtime($file)); //leading zeros 24 hour format file modified
+        $html_file_rows[] = "<td>{$file_part}</td><td>{$file_time}</td>";
       }
-      return $dlist;
+      return $html_file_rows;
     }
   }
+
   // Function to Display Files from an array
   function displayFiles(array $files, $type = "current") {
     $messages = array( "current" => "files"

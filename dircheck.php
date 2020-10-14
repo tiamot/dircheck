@@ -17,7 +17,15 @@
   $previousFile = "dircheck_{$slug}.txt";
   $directory2scan = '/files'; // starting point for directory check
 
-  // Function for Directory Scan ///////////////////////////////////////////////
+  /**
+   * Given a starting directory this function will scan its contents recursively
+   * and return a list of html table rows as an array (one for each file).
+   *
+   * @param string $dir A directory to scan for files.
+   *
+   * @return Array A list of html table rows where each row contains a
+   *               file name and the date the file was last modified.
+   */
   function directoryScan($dir) {
     if (isset($dir) && is_readable($dir)) {
       $dlist = Array();

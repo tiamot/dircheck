@@ -14,7 +14,7 @@
 
   // Variables /////////////////////////////////////////////////////////////////
   $slug = return_page_slug(); // e.g. dircheck/alex means slug is alex
-  $previousFile = "dircheck_{$slug}.txt";
+  $previousFile = "dircheck/dircheck_{$slug}.txt";
   $directory2scan = '/files'; // starting point for directory check
   $dateFormat = "m/d/Y H:i:s";
 
@@ -42,9 +42,10 @@
                    RecursiveIteratorIterator::CATCH_GET_CHILD // ignore get err
       );
       foreach($files as $file){
-        $file_part = substr($file, $prefix_length);
-        $file_time = date ($dateFormat, filemtime($file));
-        $table_data[] = "<td>{$file_part}</td><td>{$file_time}</td>";
+        $fname = substr($file, $prefix_length);
+        $ftime = date ($dateFormat, filemtime($file));
+        $fbytes = number_format(filesize($file));
+        $table_data[] = "<td>{$fname}</td><td>{$fbytes}</td><td>{$ftime}</td>";
       }
       return $table_data;
     }

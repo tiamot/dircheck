@@ -14,7 +14,7 @@
 
   // Variables /////////////////////////////////////////////////////////////////
   $slug = return_page_slug(); // e.g. dircheck/alex means slug is alex
-  $previousFile = "dircheck/dircheck_{$slug}.txt";
+  $previousFile = "dircheck_data/dircheck_{$slug}.txt";
   $directory2scan = '/files'; // starting point for directory check
   $dateFormat = "m/d/Y H:i:s";
 

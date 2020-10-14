@@ -16,6 +16,7 @@
   $slug = return_page_slug(); // e.g. dircheck/alex means slug is alex
   $previousFile = "dircheck_{$slug}.txt";
   $directory2scan = '/files'; // starting point for directory check
+  $dateFormat = "m/d/Y H:i:s";
 
   /**
    * Given a starting directory this function will scan its contents recursively
@@ -31,6 +32,7 @@
       $table_data = Array();
       $dir = realpath($dir);
       $prefix_length = strlen($dir) + 1;
+      $dateFormat = "m/d/Y H:i:s";
       $files = new RecursiveIteratorIterator(
                    new RecursiveDirectoryIterator(
                      $dir,
@@ -41,8 +43,7 @@
       );
       foreach($files as $file){
         $file_part = substr($file, $prefix_length);
-        $file_time = date ("n/j/Y g:i:s A", filemtime($file));
-        //$file_time = date ("m/d/Y H:i:s", filemtime($file)); //leading zeros 24 hour format file modified
+        $file_time = date ($dateFormat, filemtime($file));
         $table_data[] = "<td>{$file_part}</td><td>{$file_time}</td>";
       }
       return $table_data;
@@ -80,9 +81,9 @@
   // Read previous file list into an array
   // If it doesn't exist, create an empty array
   if (file_exists($previousFile)) {
-        $file_contents = file_get_contents($previousFile);
-        $previousFiles = explode("\n",trim($file_contents));
-  	$previousCheck = date("n/j/Y g:i:s A", filemtime($previousFile));
+    $file_contents = file_get_contents($previousFile);
+    $previousFiles = explode("\n",trim($file_contents));
+  	$previousCheck = date($dateFormat, filemtime($previousFile));
   } else {
   	$previousFiles = array();
   	$previousCheck = "Never";
@@ -96,6 +97,10 @@
   $deletedFiles   = array_intersect($differentFiles, $previousFiles);
   $addedFiles     = array_intersect($differentFiles, $currentFiles);
 
+  // Sort the file lists
+  sort($currentFiles);
+  sort($deletedFiles);
+  sort($addedFiles);
   
   // Save current list of files for next time
   file_put_contents($previousFile, implode("\n",$currentFiles));

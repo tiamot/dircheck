@@ -14,7 +14,7 @@
 
   // Variables /////////////////////////////////////////////////////////////////
   $slug = return_page_slug(); // e.g. dircheck/alex means slug is alex
-  $previousFile = "dircheck_data/dircheck_{$slug}.txt";
+  $previousFile = "dircheck_data/{$slug}.txt";
   $directory2scan = '/files'; // starting point for directory check
   $dateFormat = "m/d/Y H:i:s";
 
@@ -45,7 +45,7 @@
         $fname = substr($file, $prefix_length);
         $ftime = date ($dateFormat, filemtime($file));
         $fbytes = number_format(filesize($file));
-        $table_data[] = "<td>{$fname}</td><td>{$fbytes}</td><td>{$ftime}</td>";
+        $table_data[] = "<td>{$fname}</td><td style=\"text-align:right\">{$fbytes}</td><td>{$ftime}</td>";
       }
       return $table_data;
     }
@@ -126,19 +126,19 @@
 	<h2><?php ucwords(get_page_clean_title()); ?>&apos;s Directory Check</h2>
 	<table>
 		<tr>
-			<th colspan="2">Deleted Files:</th>
+			<th colspan="3">Deleted Files:</th>
 		</tr>
                 <?php displayFiles($deletedFiles); ?>
 		<tr>
-			<th colspan="2">Added Files:</th>
+			<th colspan="3">Added Files:</th>
 		</tr>
 		<?php displayFiles($addedFiles); ?>
 		<tr>
-			<th colspan="2">Last Check: <?php echo $previousCheck; ?></th>
+			<th colspan="3">Last Check: <?php echo $previousCheck; ?></th>
 		</tr>
 		<?php displayFiles($previousFiles); ?>
 		<tr>
-			<th colspan="2">Current Check: <?php echo date("m/d/Y H:i:s"); ?></th>
+			<th colspan="3">Current Check: <?php echo date("m/d/Y H:i:s"); ?></th>
 		</tr>
 		<?php displayFiles($currentFiles); ?>
 	</table>
